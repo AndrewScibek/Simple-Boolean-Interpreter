@@ -1,0 +1,1 @@
+(((truevtrue^(false))v(false^t))v(false)v(t)).

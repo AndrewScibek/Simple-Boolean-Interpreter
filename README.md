@@ -4,11 +4,11 @@ Interpreter
 A simple boolean expression interpreter
 
 The syntax is as follows:				
-P::=S
-S::=V:=<E><S1>
- ::=read(V)<S1>
- ::=write(V)<S1>
- ::=if C do S od<S1>           
+P::=S              
+S::=V:=<E><S1>              
+ ::=read(V)<S1>                  
+ ::=write(V)<S1>                 
+ ::=if C do S od<S1>                
  ::=while C do S od S1                
 S1::=;S              
   ::=                 

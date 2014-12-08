@@ -15,7 +15,7 @@ public class ExpressionGetter {
 	 */
 	boolean checkFile(String filepath) {
 		file = new File(filepath);
-		if (file.exists() && !file.isDirectory()) {
+		if (file.isFile()) {
 			return true;
 		} else {
 			System.out.println("Incorrect filepath");
@@ -26,25 +26,8 @@ public class ExpressionGetter {
 	/**
 	 * Reads string that is to be parsed
 	 * 
-	 * @return returns true if string is not empty
+	 * @return returns string that is in file
 	 */
-	boolean readInput() {
-		try {
-			Scanner read = new Scanner(new FileReader(file)); //does;
-			expression = read.nextLine();
-			if (expression.length() < 1) {
-				System.out.println("Input file cannot be empty.");
-				return false;
-
-			}
-		}
-
-		catch (Exception e) {
-			return false;
-		}
-
-		return true;
-	}
 
 	String readInput(String filepath) {
 		try {

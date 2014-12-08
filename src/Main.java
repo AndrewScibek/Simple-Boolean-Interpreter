@@ -27,7 +27,7 @@ public class Main {
 		{
 			System.out.print("Enter file path: ");
 			filepath = input.nextLine();
-		}while(!eg.checkFile(filepath)||!eg.readInput());//while not a file and empty file
+		}while(!eg.checkFile(filepath));//while not a file and empty file
 		expression = eg.readInput(filepath);
 		/*
 		 * Set boolean to true if you want verbose output

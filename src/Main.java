@@ -32,7 +32,7 @@ public class Main {
 		/*
 		 * Set boolean to true if you want verbose output
 		 */
-		inter.check(expression,false);
+		inter.check(expression);
 	}
 
 }

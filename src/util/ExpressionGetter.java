@@ -1,3 +1,4 @@
+package util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,6 +7,7 @@ import java.util.Scanner;
 public class ExpressionGetter {
 	File file;
 	String expression;
+	private Scanner read;
 
 	/**
 	 * 
@@ -32,7 +34,7 @@ public class ExpressionGetter {
 	String readInput(String filepath) {
 		try {
 			File file = new File(filepath);
-			Scanner read = new Scanner(new FileReader(file)); //does;
+			read = new Scanner(new FileReader(file));
 			expression = read.nextLine();
 		}
 

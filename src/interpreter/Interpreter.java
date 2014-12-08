@@ -1,3 +1,4 @@
+package interpreter;
 /**
  * 
  * 
@@ -24,18 +25,22 @@ public class Interpreter
 	boolean endOfExpression = false;
 	boolean tempB1, tempB2;
 	String tempS1,tempS2;
+	boolean errorfound = false;
+	
 	public void reset(){
 		currentLocation = 0;
 		correct = false;
 		numOfOpen = 0;
 		numOfClosed = 0;
 		SAS = new Stack<String>();
+		parenthesisStack = new Stack<Integer>();
 		endOfExpression = false;
 		tempB1 = false;
 		tempB2 = false;
 		tempS1 = "";
 		tempS2 = "";		
 		alreadySolved = false;
+		errorfound = false;
 	}
 	/**
 	 * This method moves the currentLocation to next character.
@@ -52,7 +57,6 @@ public class Interpreter
 			endOfExpression = true;
 			solve();
 		}
-		//if(debug) System.out.println(curChar);
 		currentLocation++;			
 	}
 	/**
@@ -63,6 +67,7 @@ public class Interpreter
 	{
 		this.expression = expression;
 		correct = E();		
+		solve();
 	}
 	/**
 	 * E::=B.
@@ -76,14 +81,14 @@ public class Interpreter
 			if(curChar.equals("."))
 			{
 				endOfExpression = true;
-				correct = true;
-				solve();
-				return true;
+				return errorfound;
 			}
 			else
 			{
+				if(!errorfound)
 					new ErrorMessage(expression,currentLocation,
 						"Expecting: . at this location");
+				errorfound = true;
 				return false;
 			}
 		}
@@ -102,14 +107,20 @@ public class Interpreter
 			}
 			else
 			{
-				new ErrorMessage(expression,currentLocation,
-						"Expecting: ^,v,.,) at this location");				
+				if(!errorfound)
+					new ErrorMessage(expression,currentLocation,
+							"Expecting: ^,v,.,) at this location");
+				errorfound = true;
+				return false;
 			}
 		}
 		else
 		{
-			new ErrorMessage(expression,currentLocation,
-					"Expecting: ~,t,true,f,false,( at this location");			
+			
+			if(!errorfound)
+				new ErrorMessage(expression,currentLocation,
+						"Expecting: ~,t,true,f,false,( at this location");	
+			errorfound = true;
 		}
 		return false;
 	}
@@ -155,9 +166,13 @@ public class Interpreter
 		{
 			if(!parenthesisStack.empty())
 				parenthesisStack.pop();
-			else
-				new ErrorMessage(expression,currentLocation,
-						"This ')' has no matching '(' It is most likely an extra.");
+			else{
+				if(!errorfound)
+					new ErrorMessage(expression,currentLocation,
+							"This ')' has no matching '(' It is most likely an extra.");
+				errorfound = true;
+				return false;
+			}
 			numOfClosed++;
 			accept();
 			return true;
@@ -171,8 +186,10 @@ public class Interpreter
 		}
 		else
 		{
-			new ErrorMessage(expression,currentLocation,
-					"Expecting: ^,v,),. at this location\nalso beware of misspellings of (true) or (false)");			
+			if(!errorfound)
+				new ErrorMessage(expression,currentLocation,
+						"Expecting: ^,v,),. at this location\nalso beware of misspellings of (true) or (false)");
+			errorfound = true;
 		}		
 		return false;
 	}
@@ -198,8 +215,10 @@ public class Interpreter
 		}
 		else
 		{
-			new ErrorMessage(expression,currentLocation,
-					"Expecting: ~,t,true,f,false,( at this location");			
+			if(!errorfound)
+				new ErrorMessage(expression,currentLocation,
+						"Expecting: ~,t,true,f,false,( at this location");		
+			errorfound = true;
 		}
 		return false;
 	}
@@ -273,9 +292,13 @@ public class Interpreter
 			{
 				if(!parenthesisStack.empty())
 					parenthesisStack.pop();
-				else
-					new ErrorMessage(expression,currentLocation,
-							"This ')' has no matching '(' It is most likely an extra.");
+				else{
+					if(!errorfound)
+						new ErrorMessage(expression,currentLocation,
+								"This ')' has no matching '(' It is most likely an extra.");
+					errorfound = true;
+					return false;
+				}
 				numOfClosed++;
 				accept();
 				return true;
@@ -283,30 +306,35 @@ public class Interpreter
 		}
 		else
 		{
-			new ErrorMessage(expression,currentLocation,
-					"Expecting: t,true,f,false,( at this location");			
+			if(!errorfound)
+				new ErrorMessage(expression,currentLocation,
+						"Expecting: t,true,f,false,( at this location");		
+			errorfound = true;
 		}		
 		return false;
 	}
 	
 	private void solve() {
-		if(alreadySolved)
-			return;
 		if((numOfOpen!=numOfClosed))
 		{
+			if(!errorfound)
 			new ErrorMessage(expression,(int)parenthesisStack.pop(),
 					"Must close this open parenthesis before the .");
+			errorfound = true;
+			return;
 		}
-		if(correct && SAS.size()==1 && endOfExpression && (numOfOpen==numOfClosed))
+		else if(correct && SAS.size()==1 && endOfExpression && !errorfound)
 		{
 			System.out.println("The expression is syntaxtically correct");
 			System.out.println("The value of the expression is "+SAS.pop());
+			return;
 		}
-		else
+		else if(!endOfExpression)
 		{
-			new ErrorMessage(expression,currentLocation+1,
-					"Expecting . at end of expression");			
+			if(!errorfound)
+				new ErrorMessage(expression,currentLocation+1,
+						"Expecting . at end of expression");		
+			errorfound = true;
 		}
-		System.exit(0);
 	}
 }

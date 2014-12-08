@@ -1,3 +1,4 @@
+package interpreter;
 /**
  * 
  * @author Andrew Scibek
@@ -13,7 +14,7 @@ public class ErrorMessage {
 		location = currentLocation;
 		this.errormessage = errormessage;
 		printError();
-		System.exit(0);
+		//System.exit(0);
 	}
 	private void printError() {
 		System.out.println(expression);
